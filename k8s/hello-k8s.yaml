@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-k8s-deployment
+  labels:
+    app: hello-k8s
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-k8s
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 34%
+      maxUnavailable: 34%
+  template:
+    metadata:
+      name: hello-k8s
+      labels:
+        app: hello-k8s
+    spec:
+      containers:
+      - name: hello-k8s
+        image: hello-k8s:latest
+        imagePullPolicy: Never
+        env:
+          - name: APP_HOST
+            value: hello-k8s.com
+          - name: DB_URL
+            value: ecto://postgres:postgres@db/hello_k8s_prod
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: PORT
+            value: "4000"
+          - name: RELEASE_COOKIE
+            value: hello-k8s-secret-cookie
+          - name: SECRET_KEY_BASE
+            value: super-secret-key-base
+          - name: SERVICE_NAME
+            value: hello-k8s-private.default.svc.cluster.local
+        resources: {}
+        securityContext:
+          privileged: false
+          procMount: Default
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
