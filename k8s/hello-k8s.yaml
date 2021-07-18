@@ -22,8 +22,8 @@ spec:
     spec:
       containers:
       - name: hello-k8s
-        image: hello-k8s:latest
-        imagePullPolicy: Never
+        image: cassiofariasmachado/hello-k8s:latest
+        imagePullPolicy: IfNotPresent
         env:
           - name: APP_HOST
             value: hello-k8s.com

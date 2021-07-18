@@ -11,24 +11,25 @@ spec:
       app: postgresql
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: postgresql
     spec:
       containers:
-      - env:
+      - name: db
+        image: postgres
+        imagePullPolicy: IfNotPresent
+        env:
         - name: POSTGRES_DB
           value: hello_k8s_prod
         - name: POSTGRES_PASSWORD
           value: postgres
-        image: postgres
-        name: db
         ports:
         - containerPort: 5432
         resources: {}
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
           name: data
+          subPath: postgres
       hostname: db
       restartPolicy: Always
       volumes:
